@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import $ from 'jquery';
 
 @Component({
   selector: 'app-root',
@@ -10,27 +11,50 @@ import html2canvas from 'html2canvas';
 export class AppComponent {
   title = 'jsPDF';
 
-  generatePDF() {
-    const element = document.getElementById('pdf-container');
+  /**
+   * export any HTML contnet to multi page PDF
+   */
+  exportHTMLToPDF() {
+    // get element and set basic pdf options
+    const element = $('.pdf-container');
+    // use jsPDF doc to extend this options
     const options = {
       background: 'white',
-      scale: 3
+      scale: 1
     };
-    html2canvas(element, options).then((canvas) => {
-      const img = canvas.toDataURL("image/PNG");
-      const doc = new jsPDF('l', 'mm', 'a4', 1);
+    // set canvas options(HTML container)
+    const elementOptions = {
+      width: element.width(),
+      height: element.height(),
+      topMargin: 15
+    }
+    // set PDF container options
+    const PDFOptions = {
+      width: elementOptions.width + (elementOptions.topMargin * 2),
+      height: ( elementOptions.width * 1.5) + (elementOptions.topMargin * 2)
+    }
+		const canvasImageWidth = elementOptions.width;
+		const canvasImageHeight = elementOptions.height;
+    
+    // calculate the total num of pages to be exported
+		const totalPDFPages = Math.ceil(elementOptions.height/PDFOptions.height) - 1;
+		
 
-      // Add image Canvas to PDF
-      const bufferX = 5;
-      const bufferY = 5;
-      const imgProps = (<any>doc).getImageProperties(img);
-      const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      doc.addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
-
-      return doc;
+		html2canvas(element[0], options).then((canvas) => {
+			canvas.getContext('2d');
+			const imgData = canvas.toDataURL("image/jpeg", 1.0);
+			const doc = new jsPDF('p', 'pt',  [PDFOptions.width, PDFOptions.height]);
+		  doc.addImage(imgData, 'JPG', elementOptions.topMargin, elementOptions.topMargin, canvasImageWidth, canvasImageHeight);
+			
+			
+			for (let i = 1; i <= totalPDFPages; i++) { 
+				doc.addPage(PDFOptions.width, PDFOptions.height);
+				doc.addImage(imgData, 'JPG', elementOptions.topMargin, -(PDFOptions.height*i)+(elementOptions.topMargin*4), canvasImageWidth, canvasImageHeight);
+			}
+		  return doc;
     }).then((doc) => {
-      doc.save(`sample-${Math.random()}.pdf`);
+      doc.save(`multi-page-sample-${Math.random()}.pdf`);
     });
   }
+  
 }

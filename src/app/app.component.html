@@ -302,16 +302,16 @@
     alt="Angular Logo"
     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
   />
-  <span>Welcome to jSPDF</span>
+  <span>Welcome to jSPDF (exporting large html content to multi page PDF document)</span>
     <div class="spacer"></div>
 </div>
 
 <div class="contentainer" role="main">
   <p class="text-right" style="margin: 2rem;">
-    <a href="#" title="Export to PDF" (click)="generatePDF()">Export to PDF</a>
+    <a href="#" title="Export to PDF" (click)="exportHTMLToPDF()">Export to PDF</a>
   </p>
   <!-- Sample markup (add many complex structure to verify the export) -->
-  <div id="pdf-container">
+  <div class="pdf-container">
     <h1 class="display-4">Sample Table</h1>
     <table class="table table-striped">
       <thead>
@@ -323,23 +323,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-          <td>the Bird</td>
-          <td>@twitter</td>
+        <!-- Repeat 100 dummy rows-->
+        <tr *ngFor="let dummy of ' '.repeat(100).split(''), let x = index">
+          <th scope="row">{{ x }}</th>
+          <td>Mark{{x}}</td>
+          <td>Otto{{x}}</td>
+          <td>@mdo{{x}}</td>
         </tr>
       </tbody>
     </table>
